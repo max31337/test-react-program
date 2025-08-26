@@ -17,6 +17,11 @@ function resolveApiBase () {
   return '/api';
 }
 const API_BASE = resolveApiBase();
+// Temporary debug (remove once verified)
+if (typeof window !== 'undefined') {
+  // eslint-disable-next-line no-console
+  console.log('[API] Using base:', API_BASE);
+}
 
 export async function loginRequest (email: string, password: string) {
   const res = await axios.post(`${API_BASE}/login`, { email, password });
