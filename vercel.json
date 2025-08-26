@@ -1,11 +1,12 @@
 {
   "version": 2,
   "builds": [
-    { "src": "web/api/**/*.js", "use": "@vercel/node" },
-    { "src": "web/index.html", "use": "@vercel/static-build", "config": { "distDir": "web/dist" } }
+    { "src": "web/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
+    { "src": "web/api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "web/api/$1.js" },
-    { "src": "/(.*)", "dest": "web/dist/$1" }
+  { "src": "/(.*)\\.(js|css|svg|png|jpg|jpeg|gif|ico|json)", "dest": "web/dist/$1.$2" },
+    { "src": "/(.*)", "dest": "web/dist/index.html" }
   ]
 }
