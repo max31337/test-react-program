@@ -1,11 +1,15 @@
-// Serverless login function (CommonJS) for Vercel: POST /api/login
-const fs = require('fs/promises');
-const path = require('path');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { z } = require('zod');
+// Serverless login function (ESM) for Vercel: POST /api/login
+import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { z } from 'zod';
 
-const usersFile = path.join(process.cwd(), 'web', 'data', 'users.json');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// users.json sits at web/data/users.json relative to this file (../data)
+const usersFile = path.join(__dirname, '../data/users.json');
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -17,13 +21,23 @@ async function loadUsers () {
   return JSON.parse(raw);
 }
 
-module.exports = async function handler (req, res) {
+export default async function handler (req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
   try {
-    const parsed = loginSchema.safeParse(req.body || {});
+    // Body may already be parsed; if not, attempt manual parse
+    let body = req.body;
+    if (!body || typeof body !== 'object') {
+      const chunks = [];
+      for await (const chunk of req) chunks.push(chunk);
+      const text = Buffer.concat(chunks).toString();
+      if (text) {
+        try { body = JSON.parse(text); } catch { body = {}; }
+      } else body = {};
+    }
+    const parsed = loginSchema.safeParse(body);
     if (!parsed.success) {
       return res.status(400).json({ error: 'Invalid login payload' });
     }
@@ -42,4 +56,4 @@ module.exports = async function handler (req, res) {
     console.error('Login error', e);
     return res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
