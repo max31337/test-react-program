@@ -77,13 +77,14 @@ function AuthButtons({ pathname }: { pathname: string | null }) {
   const [verifying, setVerifying] = React.useState(!hadAuthedFlag);
   const [loggingOut, setLoggingOut] = React.useState(false);
   const router = useRouter();
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '/api';
 
   React.useEffect(() => {
     let cancelled = false;
     async function verify() {
       setVerifying(true);
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/me`, { credentials: 'include' });
+  const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
         if (cancelled) return;
         if (res.ok) {
           setAuthed(true);
@@ -107,7 +108,7 @@ function AuthButtons({ pathname }: { pathname: string | null }) {
 
   async function logout() {
     setLoggingOut(true);
-    try { await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' }); } catch {}
+  try { await fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' }); } catch {}
     try { localStorage.removeItem('authed'); } catch {}
     setAuthed(false);
     setLoggingOut(false);

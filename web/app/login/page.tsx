@@ -15,12 +15,13 @@ export default function LoginPage() {
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '/api';
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     try {
-      const res = await fetch('http://localhost:4000/api/auth/login', {
+  const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

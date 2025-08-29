@@ -43,12 +43,13 @@ export default function DashboardPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [guest, setGuest] = useState(false);
   const [showGuestModal, setShowGuestModal] = useState(false);
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '/api';
 
   // Logout now handled globally in navbar
 
   async function checkAuth(): Promise<boolean> {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/me`, { credentials: 'include' });
+  const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
       if (res.status === 401) {
         // Not authed: show guest modal instead of redirect
         setGuest(true);
@@ -75,7 +76,7 @@ export default function DashboardPage() {
   if (!isValidIp(search)) { setError('Invalid IPv4 address'); setShowErrorModal(true); return; }
     setLoading(true); setError(null);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/geo/lookup?ip=${search}`, { credentials: 'include' });
+  const res = await fetch(`${API_BASE}/geo/lookup?ip=${search}`, { credentials: 'include' });
       if (!res.ok) throw new Error('Lookup failed');
       const data = await res.json();
       setGeo(normalizeGeo(data.data, data.ip));
@@ -88,7 +89,7 @@ export default function DashboardPage() {
   async function loadSelf() {
     setLoading(true); setError(null);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/geo/lookup`, { credentials: 'include' });
+  const res = await fetch(`${API_BASE}/geo/lookup`, { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
         setGeo(normalizeGeo(data.data, data.ip));
@@ -97,13 +98,13 @@ export default function DashboardPage() {
   }
 
   async function loadHistory() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/history`, { credentials: 'include' });
+  const res = await fetch(`${API_BASE}/history`, { credentials: 'include' });
     const data = await res.json();
     setHistory(data.items);
   }
 
   async function deleteSelected() {
-    await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/history`, { method: 'DELETE', credentials: 'include', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ids: Array.from(selected) }) });
+  await fetch(`${API_BASE}/history`, { method: 'DELETE', credentials: 'include', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ids: Array.from(selected) }) });
     setSelected(new Set());
     loadHistory();
   }
