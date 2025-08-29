@@ -22,7 +22,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         {pathname !== '/login' && (
-          <header className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-neutral-900/60 bg-white/80 dark:bg-neutral-900/80 sticky top-0 z-40">
+          <header className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-neutral-900/60 bg-white/80 dark:bg-neutral-900/80 sticky top-0 z-[2000] shadow-sm">
+            {/* z-index raised above Leaflet map layers/controls to prevent overlap on small screens */}
             <div className="flex items-center gap-3">
               <Link href="/" aria-label="Home" className="inline-flex items-center gap-2">
                 <Globe2 className="h-6 w-6 text-blue-600" />

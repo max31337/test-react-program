@@ -28,12 +28,14 @@ export function MapView({ lat, lon }: { lat?: number; lon?: number }) {
   const position: [number, number] = [lat, lon];
   const icon = L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', iconSize: [25,41], iconAnchor:[12,41] });
   return (
-    <MapContainer center={position} zoom={10} style={{ height: '100%', width: '100%' }} scrollWheelZoom>
+    <div className="relative h-full w-full overflow-hidden [&_.leaflet-control]:!z-[1] [&_.leaflet-pane]:!z-0">
+    <MapContainer center={position} zoom={10} style={{ height: '100%', width: '100%', zIndex: 0 }} scrollWheelZoom>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <FlyOnChange lat={lat} lon={lon} />
       <Marker position={position} icon={icon}>
         <Popup>{lat}, {lon}</Popup>
       </Marker>
     </MapContainer>
+    </div>
   );
 }
